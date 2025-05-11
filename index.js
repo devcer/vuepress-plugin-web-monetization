@@ -1,15 +1,17 @@
+const path = require("path");
+
 module.exports = (options = {}, context) => {
   return {
-    extendPageData ($page) {
-      // Should we use the address from the site config or from the frontmatter?
-      // For more better understandability it's referred to as 'address'
-      // ..in the config while 'monetization' in the frontmatter.
-      const address = $page.frontmatter.monetization || options.address
+    define: {
+      MONETIZATION_ADDRESS: options.address || null,
+    },
+    // Hook into the page data to optionally add frontmatter
+    extendPageData($page) {
+      // Optional: You can manipulate page data here if needed
+      // This part is not required anymore since we’re injecting via enhanceApp
+    },
 
-      // Add the meta tag
-      let meta = $page.frontmatter.meta || []
-      meta.push({ 'name': 'monetization', 'content': address })
-      $page.frontmatter.meta = meta
-    }
-  }
-}
+    // Tell VuePress where the client-side app enhancement file is
+    enhanceAppFiles: path.resolve(__dirname, "enhanceApp.js"),
+  };
+};
